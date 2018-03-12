@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="gitFixCase:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/gitFixCase_jar</output-path>
+    <root id="root">
+      <element id="archive" name="gitFixCase.jar">
+        <element id="module-output" name="gitFixCase" />
+      </element>
+      <element id="library" level="project" name="org.eclipse.jgit-4.3.1" />
+      <element id="library" level="project" name="log4j-1.2.17" />
+      <element id="library" level="project" name="slf4j-api-1.7.21" />
+    </root>
+  </artifact>
+</component>
