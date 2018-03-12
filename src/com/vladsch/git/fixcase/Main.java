@@ -1,33 +1,29 @@
 package com.vladsch.git.fixcase;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
-import javax.sound.midi.SysexMessage;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class Main {
 
     static void printUsageInfo() {
         System.out.println("Usage:");
-        System.out.println("---------------------");
-        System.out.println("java -jar ./gitFixCase.jar -l");
+        System.out.println("    java -jar ./gitFixCase.jar option");
         System.out.println("");
-        System.out.println("list files with file case mismatch between git and the file system");
-        System.out.println("");
-        System.out.println("java -jar ./gitFixCase.jar -f");
-        System.out.println("");
-        System.out.println("will fix file case in git to match the file system's case for the files");
-        System.out.println("");
-        System.out.println("java -jar ./gitFixCase.jar -g");
-        System.out.println("");
-        System.out.println("will fix file case in the file system to match the git's case for the file");
+        System.out.println("    -f will fix file case in git to match the file system's case for the files");
+        System.out.println("    -g will fix file case in the file system to match the git's case for the file");
+        System.out.println("    -l list files with file case mismatch between git and the file system");
     }
 
     static String getFileSystemPath(String path) {
@@ -37,11 +33,17 @@ public class Main {
         String sep = "";
 
         for (String part : parts) {
-            File file = new File(parentDir, part);
-
-            sb.append(sep).append(file.getName());
-            sep = "/";
-            parentDir = file;
+            for (File file : Objects.requireNonNull(parentDir.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(final File pathname) {
+                    return pathname.getName().equalsIgnoreCase(part);
+                }
+            }))) {
+                sb.append(sep).append(file.getName());
+                sep = "/";
+                parentDir = file;
+                break;
+            }
         }
 
         return sb.toString();
@@ -49,19 +51,20 @@ public class Main {
 
     static HashMap<String, String> getMismatchedFiles() {
         Repository repository = null;
-        HashMap<String,String> mismatchedFiles = new HashMap<>();
+        HashMap<String, String> mismatchedFiles = new HashMap<>();
 
         try {
             repository = new FileRepository("./.git");
-            Git git = new Git(repository);
-
             DirCache dirCache = repository.readDirCache();
             int iMax = dirCache.getEntryCount();
 
-
             for (int i = 0; i < iMax; i++) {
                 DirCacheEntry entry = dirCache.getEntry(i);
-                System.out.format("entry[%d]: %s -> %s\n", i, entry.getPathString(), getFileSystemPath(entry.getPathString()));
+                String fileSystemPath = getFileSystemPath(entry.getPathString());
+                //System.out.format("entry[%d]: %s -> %s\n", i, entry.getPathString(), fileSystemPath);
+                if (!entry.getPathString().equals(fileSystemPath)) {
+                    mismatchedFiles.put(entry.getPathString(), fileSystemPath);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,9 +80,9 @@ public class Main {
             int iMax = args.length;
             int fileIndex = 0;
             int haveErrors = 0;
-            boolean listMismatches =false;
-            boolean matchToFileSystem =false;
-            boolean matchToGit =false;
+            boolean listMismatches = false;
+            boolean matchToFileSystem = false;
+            boolean matchToGit = false;
 
 outer:
             for (int i = 0; i < iMax; i++) {
@@ -118,13 +121,49 @@ outer:
 
             if (haveErrors == 0) {
                 if (listMismatches) {
-                    getMismatchedFiles();
+                    HashMap<String, String> mismatchedFiles = getMismatchedFiles();
+                    for (Map.Entry<String, String> entry : mismatchedFiles.entrySet()) {
+                        System.out.format("git file %s -> %s\n", entry.getKey(), entry.getValue());
+                    }
                 }
 
                 if (matchToFileSystem) {
+                    Repository repository = null;
 
+                    try {
+                        repository = new FileRepository("./.git");
+                        Git git = new Git(repository);
+
+                        HashMap<String, String> mismatchedFiles = getMismatchedFiles();
+                        for (Map.Entry<String, String> entry : mismatchedFiles.entrySet()) {
+                            System.out.format("renaming git file %s -> %s\n", entry.getKey(), entry.getValue());
+                            git.rm().addFilepattern(entry.getKey()).setCached(true).call();
+                            git.add().addFilepattern(entry.getValue()).setUpdate(false).call();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (NoFilepatternException e) {
+                        e.printStackTrace();
+                    } catch (GitAPIException e) {
+                        e.printStackTrace();
+                    }
                 } else if (matchToGit) {
+                    Repository repository = null;
 
+                    try {
+                        repository = new FileRepository("./.git");
+                        Git git = new Git(repository);
+
+                        HashMap<String, String> mismatchedFiles = getMismatchedFiles();
+                        for (Map.Entry<String, String> entry : mismatchedFiles.entrySet()) {
+                            System.out.format("renaming file %s -> %s\n", entry.getValue(), entry.getKey());
+                            File file = new File(entry.getValue());
+                            File toFile = new File(entry.getKey());
+                            file.renameTo(toFile);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             } else {
                 printUsageInfo();
