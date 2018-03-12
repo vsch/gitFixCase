@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="artifacts">
+    <property name="artifact.output.path" value="${basedir}/out/artifacts/gitFixCase"/>
+    <target name="copy.jar" description="Copy jar to root directory">
+        <jar destfile="gitFixCase.jar">
+            <zipfileset excludes="META-INF/*.RSA,META-INF/*.SF,META-INF/*SF" src="${artifact.output.path}/gitFixCase.jar" />
+            <manifest>
+                <attribute name="Main-Class" value="com.vladsch.git.fixcase.Main"/>
+            </manifest>
+        </jar>
+    </target>
+</project>
