@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="MarkdownExportedFiles">
-    <htmlFiles />
+    <htmlFiles>
+      <exportedFile path="$PROJECT_DIR$/src/main/javadoc/overview.html" settingsVersion="ED6B5AAF-5F6A6B2F" />
+    </htmlFiles>
     <imageFiles />
     <otherFiles />
   </component>

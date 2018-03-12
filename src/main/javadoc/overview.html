@@ -1,0 +1,20 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<p>Java command line application to list and fix file case mismatches between git and the file system.</p>
+<p>Usage:</p>
+<pre><code>java -jar ./gitFixCase.jar option
+</code></pre>
+<p>Options:</p>
+<ul>
+  <li>-a list all files in git and their names in file system</li>
+  <li>-f will fix file case in git to match the file system&rsquo;s case for the files</li>
+  <li>-g will fix file case in the file system to match the git&rsquo;s case for the file</li>
+  <li>-l list files with file case mismatch between git and the file system</li>
+</ul>
+<p>Walks up the directory tree to find the <code>.git/</code> directory of the repository then applies the
+requested options to files in the current directory.</p>
+</body>
+</html>

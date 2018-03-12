@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="OVERVIEW" pattern="file[gitFixCase]:src/main/javadoc//*" />
+</component>
