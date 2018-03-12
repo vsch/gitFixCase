@@ -20,9 +20,9 @@ public class Main {
         System.out.println("    java -jar ./gitFixCase.jar option");
         System.out.println("");
         System.out.println("    -a list all files in git and their names in file system");
-        System.out.println("    -f will fix file case in git to match the file system's case for the files");
-        System.out.println("    -g will fix file case in the file system to match the git's case for the file");
         System.out.println("    -l list files with file case mismatch between git and the file system");
+        System.out.println("    -f fix file case in git to match the file system's case for the files");
+        System.out.println("    -g fix file case in the file system to match the git's case for the file");
     }
 
     static String getFileSystemPath(Repository repository, String path) {
