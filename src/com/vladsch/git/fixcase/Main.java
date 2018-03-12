@@ -7,6 +7,7 @@ import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
 import javax.sound.midi.SysexMessage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,19 +30,38 @@ public class Main {
         System.out.println("will fix file case in the file system to match the git's case for the file");
     }
 
+    static String getFileSystemPath(String path) {
+        String[] parts = path.split("/");
+        File parentDir = new File(".");
+        StringBuilder sb = new StringBuilder();
+        String sep = "";
+
+        for (String part : parts) {
+            File file = new File(parentDir, part);
+
+            sb.append(sep).append(file.getName());
+            sep = "/";
+            parentDir = file;
+        }
+
+        return sb.toString();
+    }
+
     static HashMap<String, String> getMismatchedFiles() {
         Repository repository = null;
         HashMap<String,String> mismatchedFiles = new HashMap<>();
 
         try {
-            repository = new FileRepository(".git");
+            repository = new FileRepository("./.git");
             Git git = new Git(repository);
 
             DirCache dirCache = repository.readDirCache();
             int iMax = dirCache.getEntryCount();
+
+
             for (int i = 0; i < iMax; i++) {
                 DirCacheEntry entry = dirCache.getEntry(i);
-                System.out.format("entry[%d]: %s", i, entry.getPathString());
+                System.out.format("entry[%d]: %s -> %s\n", i, entry.getPathString(), getFileSystemPath(entry.getPathString()));
             }
         } catch (IOException e) {
             e.printStackTrace();
