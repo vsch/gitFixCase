@@ -4,6 +4,9 @@
     <module name="gitFixCase" />
     <option name="PROGRAM_PARAMETERS" value="-l" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../../idea-multimarkdown2" />
+    <RunnerSettings RunnerId="Debug with VisualVM">
+      <option name="visualVMId" value="34564064948859" />
+    </RunnerSettings>
     <method />
   </configuration>
 </component>

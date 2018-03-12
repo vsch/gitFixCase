@@ -85,6 +85,8 @@ public class Main {
                 String prefix = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath();
                 if (!prefix.equals(absolutePath)) {
                     prefix = prefix.substring(absolutePath.length() + 1);
+                } else {
+                    prefix = "";
                 }
 
                 int iMax = dirCache.getEntryCount();
