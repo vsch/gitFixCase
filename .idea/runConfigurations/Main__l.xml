@@ -3,7 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="com.vladsch.git.fixcase.Main" />
     <module name="gitFixCase" />
     <option name="PROGRAM_PARAMETERS" value="-l" />
-    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../../idea-multimarkdown2/assets/images/faq" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../../idea-multimarkdown2" />
     <method />
   </configuration>
 </component>

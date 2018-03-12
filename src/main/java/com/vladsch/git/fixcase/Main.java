@@ -78,7 +78,15 @@ public class Main {
             repository = getRepository();
             if (repository != null) {
                 DirCache dirCache = repository.readDirCache();
-                String prefix = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath().substring(repository.getDirectory().getParentFile().getAbsolutePath().length() + 1);
+                String absolutePath = repository.getDirectory().getParentFile().getAbsolutePath();
+                if (absolutePath.endsWith("/.")) {
+                    absolutePath = absolutePath.substring(0, absolutePath.length() - "/.".length());
+                }
+                String prefix = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath();
+                if (!prefix.equals(absolutePath)) {
+                    prefix = prefix.substring(absolutePath.length() + 1);
+                }
+
                 int iMax = dirCache.getEntryCount();
 
                 for (int i = 0; i < iMax; i++) {

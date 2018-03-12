@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.vladsch.javafx-webview-debugger</groupId>
     <artifactId>git-fix-case</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>gitFixCase</name>
     <description>
         Java command line application to list and fix git and file system case mismatches
